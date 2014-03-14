@@ -34,10 +34,16 @@ public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engi
 
     @GET
     @Path(CoreUrlConstants.DoJson.DO_LIST)
-    public ListDTO<ReturnDto> list(@Context HttpContext hc, @QueryParam("all") boolean all, @QueryParam("page") Integer page, @QueryParam("perpage") Integer perpage) {
+    public ListDTO<ReturnDto> list(@Context HttpContext hc, @QueryParam("all") Boolean all, @QueryParam("page") Integer page, @QueryParam("perpage") Integer perpage) {
         if (engine == null)
             throw new NotImplementedException();
         ListDTO<ReturnDto> ret = new ListDTO<>();
+        if (all == null)
+            all = true;
+        if (page == null)
+            page = -1;
+        if (perpage == null)
+            perpage = -1;
         ret.setData(engine.listDtos(all, page, perpage));
         return ret;
     }

@@ -87,4 +87,24 @@ public class AbstractResource {
         return response;
     }
 
+    public static Response returnHtmlFile(String fileName) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            stream.write(IOUtils.readFully(new FileInputStream(new File(fileName)), -1, true));
+        } catch (IOException e) {
+            Logger.getLogger(AbstractResource.class).error("Unable to read file");
+            Response response = Response
+                    .noContent()
+                    .type("text/html")
+                    .build();
+            return response;
+        }
+        Response response = Response
+                .ok()
+                .type("text/html")
+                .entity(stream.toByteArray())
+                .build();
+        return response;
+    }
+
 }
