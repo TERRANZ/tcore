@@ -1,7 +1,7 @@
 package ru.terra.server.engine;
 
 import org.apache.log4j.Logger;
-import ru.terra.server.db.controllers.AbstractJpaController;
+import ru.terra.server.db.controllers.AbstractDBController;
 import ru.terra.server.dto.CommonDTO;
 
 import java.util.ArrayList;
@@ -9,17 +9,17 @@ import java.util.List;
 
 public abstract class AbstractEngine<Entity, Dto extends CommonDTO> {
     private Logger logger = Logger.getLogger(AbstractEngine.class);
-    protected AbstractJpaController<Entity> jpaController;
+    protected AbstractDBController<Entity> dbController;
     protected Class<? extends Entity> entityClass;
 
-    public AbstractEngine(AbstractJpaController<Entity> jpaController) {
-        this.jpaController = jpaController;
-        entityClass = jpaController.getEntityClass();
+    public AbstractEngine(AbstractDBController<Entity> dbController) {
+        this.dbController = dbController;
+        entityClass = dbController.getEntityClass();
     }
 
     public List<Entity> listBeans(Boolean all, Integer page, Integer perPage) {
         try {
-            return jpaController.list(all, page, perPage);
+            return dbController.list(all, page, perPage);
         } catch (Exception e) {
             logger.error("Unable to list beans", e);
             return new ArrayList<>();
@@ -28,7 +28,7 @@ public abstract class AbstractEngine<Entity, Dto extends CommonDTO> {
 
     public Entity getBean(Integer id) {
         try {
-            return jpaController.get(id);
+            return dbController.get(id);
         } catch (Exception e) {
             logger.error("Unable to get bean", e);
             return null;
@@ -37,7 +37,7 @@ public abstract class AbstractEngine<Entity, Dto extends CommonDTO> {
 
     public boolean updateBean(Entity bean) {
         try {
-            jpaController.update(bean);
+            dbController.update(bean);
             return true;
         } catch (Exception e) {
             logger.error("Unable to update bean", e);
@@ -56,7 +56,7 @@ public abstract class AbstractEngine<Entity, Dto extends CommonDTO> {
 
     public Entity createBean(Entity bean) {
         try {
-            jpaController.create(bean);
+            dbController.create(bean);
             return bean;
         } catch (Exception e) {
             logger.error("Unable to create bean", e);
@@ -80,7 +80,7 @@ public abstract class AbstractEngine<Entity, Dto extends CommonDTO> {
 
     public boolean delete(Integer id) {
         try {
-            jpaController.delete(id);
+            dbController.delete(id);
             return true;
         } catch (Exception e) {
             logger.error("Unable to delete bean", e);

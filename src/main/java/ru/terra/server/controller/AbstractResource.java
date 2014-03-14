@@ -75,7 +75,7 @@ public class AbstractResource {
         cc.setNoTransform(true);
         cc.setMustRevalidate(false);
         cc.setNoCache(false);
-        cc.setMaxAge(3600);
+        cc.setMaxAge(86400);
         EntityTag entityTag = new EntityTag(String.valueOf(path.hashCode()));
 
         Response response = Response
