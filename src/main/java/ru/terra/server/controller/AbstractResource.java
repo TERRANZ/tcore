@@ -92,7 +92,7 @@ public class AbstractResource {
         try {
             stream.write(IOUtils.readFully(new FileInputStream(new File(fileName)), -1, true));
         } catch (IOException e) {
-            Logger.getLogger(AbstractResource.class).error("Unable to read file");
+            Logger.getLogger(AbstractResource.class).error("Unable to read file", e);
             Response response = Response
                     .noContent()
                     .type("text/html")

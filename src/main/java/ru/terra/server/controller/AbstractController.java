@@ -18,11 +18,13 @@ import javax.ws.rs.core.Context;
 
 public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engine extends AbstractEngine<Bean, ReturnDto>> extends AbstractResource {
 
+    private Boolean checkUserAccess;
     protected Engine engine;
 
     private Logger logger = Logger.getLogger(AbstractController.class);
 
-    public AbstractController(Class<Engine> engineClass) {
+    public AbstractController(Class<Engine> engineClass, Boolean checkUserAccess) {
+        this.checkUserAccess = checkUserAccess;
         try {
             engine = engineClass.newInstance();
         } catch (InstantiationException e) {
@@ -37,6 +39,12 @@ public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engi
     public ListDTO<ReturnDto> list(@Context HttpContext hc, @QueryParam("all") Boolean all, @QueryParam("page") Integer page, @QueryParam("perpage") Integer perpage) {
         if (engine == null)
             throw new NotImplementedException();
+        if (checkUserAccess && !isAuthorized(hc)) {
+            ListDTO<ReturnDto> ret = new ListDTO<>();
+            ret.errorCode = ErrorConstants.ERR_NOT_AUTHORIZED_ID;
+            ret.errorMessage = ErrorConstants.ERR_NOT_AUTHORIZED_MSG;
+            return ret;
+        }
         ListDTO<ReturnDto> ret = new ListDTO<>();
         if (all == null)
             all = true;
@@ -53,6 +61,12 @@ public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engi
     public ReturnDto get(@Context HttpContext hc, @QueryParam("id") Integer id) {
         if (engine == null)
             throw new NotImplementedException();
+        if (checkUserAccess && !isAuthorized(hc)) {
+            CommonDTO ret = new CommonDTO();
+            ret.errorCode = ErrorConstants.ERR_NOT_AUTHORIZED_ID;
+            ret.errorMessage = ErrorConstants.ERR_NOT_AUTHORIZED_MSG;
+            return (ReturnDto) ret;
+        }
         return engine.getDto(id);
     }
 

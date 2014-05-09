@@ -8,4 +8,6 @@ public interface ConfigConstants {
     public static final String SERVER_ADDR_DEFAULT = "0.0.0.0/terramarket/";
     public static final String PESISTANCE_UNIT = "server.pu";
     public static final String PESISTANCE_UNIT_DEFAULT = "tmpu";
+    public static final String SERVER_PORT = "server.port";
+    public static final String SERVER_PORT_DEFAULT = "8080";
 }
