@@ -29,27 +29,33 @@ public class TimersManager {
     public void start() {
         logger.info("Starting timers manager...");
         try {
-            // Grab the Scheduler instance from the Factory
-            SchedulerFactory schFactory = new StdSchedulerFactory();
-            scheduler = schFactory.getScheduler();
-            startSessionsExpirationJob();
-            scheduler.start();
-            startSessionsExpirationJob();
+            SchedulerFactory sf = new StdSchedulerFactory();
+            Scheduler sched = sf.getScheduler();
+            JobDetail job = JobBuilder.newJob(SessionExpirationJob.class)
+                    .withIdentity("SessionExpirationJob", "group1")
+                    .build();
+            Trigger trigger = TriggerBuilder.newTrigger()
+                    .withIdentity("trigger1", "group1")
+                    .startNow()
+                    .withSchedule(
+                            SimpleScheduleBuilder.simpleSchedule()
+                                    .withIntervalInSeconds(Integer.parseInt(config.getValue(ConfigConstants.SESSION_TTL, ConfigConstants.SESSION_TTL_DEFAULT)))
+                                    .repeatForever()
+                    )
+                    .build();
+            sched.scheduleJob(job, trigger);
+            sched.start();
         } catch (SchedulerException se) {
             se.printStackTrace();
             logger.error("Error while initializing quartz", se);
         }
-    }
-
-    private void startSessionsExpirationJob() throws SchedulerException {
-        JobDetail job = JobBuilder.newJob(SessionExpirationJob.class).withIdentity("SessionExpirationJob").build();
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withSchedule(
-                        SimpleScheduleBuilder.simpleSchedule()
-                                .withIntervalInSeconds(Integer.parseInt(config.getValue(ConfigConstants.SESSION_TTL, ConfigConstants.SESSION_TTL_DEFAULT)))
-                                .repeatForever())
-                .build();
-        //scheduler.scheduleJob(job, trigger);
+        while (true) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
