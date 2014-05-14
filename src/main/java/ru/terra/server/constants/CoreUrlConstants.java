@@ -9,5 +9,7 @@ public abstract class CoreUrlConstants {
         public static final String DO_LIST = "do.list.json";
         public static final String DO_GET = "do.get.json";
         public static final String DO_DEL = "do.delete.json";
+        public static final String DO_CREATE = "do.create.json";
+        public static final String DO_UPDATE = "do.update.json";
     }
 }
