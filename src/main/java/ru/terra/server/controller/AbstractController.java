@@ -31,7 +31,7 @@ public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engi
         try {
             engine = engineClass.newInstance();
         } catch (InstantiationException e) {
-            logger.error("Unable to instantiate egine", e);
+            logger.error("Unable to instantiate engine", e);
         } catch (IllegalAccessException e) {
             logger.error("Unable to access to engine class", e);
         }
