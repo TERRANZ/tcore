@@ -19,7 +19,7 @@ public class ServerBoot {
 
     protected static HttpServer startServer() throws IOException {
         String url = "http://" + Config.getConfig().getValue(ConfigConstants.SERVER_ADDR, ConfigConstants.SERVER_ADDR_DEFAULT);
-        URI uri = UriBuilder.fromUri(url).port(8080).build();
+        URI uri = UriBuilder.fromUri(url).port(Integer.parseInt(Config.getConfig().getValue(ConfigConstants.SERVER_PORT, ConfigConstants.SERVER_PORT_DEFAULT))).build();
         WebappContext context = new WebappContext("context");
         HttpServer webserver = GrizzlyServerFactory.createHttpServer(uri);
         context.deploy(webserver);
