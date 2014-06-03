@@ -13,6 +13,12 @@ public class LoginDTO extends CommonDTO {
     public LoginDTO() {
     }
 
+    public LoginDTO(String message, boolean logged, String session) {
+        this.message = message;
+        this.logged = logged;
+        this.session = session;
+    }
+
     public static LoginDTO valueOf(String json) {
         return new JSONDeserializer<LoginDTO>().deserialize(json);
     }

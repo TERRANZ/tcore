@@ -6,7 +6,7 @@ package ru.terra.server.db.entity;
  */
 public class AbstractUser {
     protected Integer id;
-    protected int level;
+    protected Integer level;
     protected String name;
 
     public Integer getId() {
@@ -17,11 +17,11 @@ public class AbstractUser {
         this.id = id;
     }
 
-    public int getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 
@@ -33,7 +33,7 @@ public class AbstractUser {
         this.name = name;
     }
 
-    public AbstractUser(Integer id, int level, String name) {
+    public AbstractUser(Integer id, Integer level, String name) {
         this.id = id;
         this.level = level;
         this.name = name;
