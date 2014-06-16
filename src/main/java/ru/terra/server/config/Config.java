@@ -30,20 +30,14 @@ public class Config {
 
 
     public String getValue(String key, String defVal) {
-        log.info("reading config " + key + " defval = " + defVal);
         if (configuration == null)
             return defVal;
-        else {
-            return configuration.getString(key, defVal);
-        }
+        return configuration.getString(key, defVal);
     }
 
 
     public void setConfig(String key, String val) {
-        log.info("write config " + key + " = " + val);
-        if (configuration != null) {
+        if (configuration != null)
             configuration.setProperty(key, val);
-        }
-
     }
 }
