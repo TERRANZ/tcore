@@ -5,4 +5,5 @@ public interface ErrorConstants {
 	public static final String ERR_NO_ERROR_MSG = "ok";
 	public static final int ERR_NOT_AUTHORIZED_ID = 1;
 	public static final String ERR_NOT_AUTHORIZED_MSG = "You are not authorized";
+    public static final int ERR_INTERNAL_EXCEPTION = 2;
 }
