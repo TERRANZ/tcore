@@ -89,7 +89,7 @@ public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engi
 
     @PUT
     @Path(CoreUrlConstants.DoJson.DO_CREATE)
-    public ReturnDto create(@Context HttpContext hc, @QueryParam("json") String json) {
+    public ReturnDto create(@Context HttpContext hc, String json) {
         if (engine == null)
             throw new NotImplementedException();
         if (checkUserAccess && !isAuthorized(hc)) {
