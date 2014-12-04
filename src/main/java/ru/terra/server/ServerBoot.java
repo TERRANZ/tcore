@@ -27,7 +27,7 @@ public class ServerBoot {
 
 
     public void start() throws IOException {
-        BasicConfigurator.configure();
+//        BasicConfigurator.configure();
         HttpServer httpServer = startServer();
         while (true) {
             try {
