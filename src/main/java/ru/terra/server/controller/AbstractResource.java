@@ -83,7 +83,6 @@ public class AbstractResource {
                 .cacheControl(cc)
                 .tag(entityTag)
                 .entity(stream.toByteArray())
-                .header("Content-Disposition", "attachment; filename=" + path.substring(path.lastIndexOf(".")))
                 .build();
         return response;
     }
