@@ -1,7 +1,5 @@
 package ru.terra.server.dto;
 
-import flexjson.JSONDeserializer;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -18,9 +16,4 @@ public class LoginDTO extends CommonDTO {
         this.logged = logged;
         this.session = session;
     }
-
-    public static LoginDTO valueOf(String json) {
-        return new JSONDeserializer<LoginDTO>().deserialize(json);
-    }
-
 }

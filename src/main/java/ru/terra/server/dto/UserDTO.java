@@ -1,6 +1,5 @@
 package ru.terra.server.dto;
 
-import flexjson.JSONDeserializer;
 import ru.terra.server.db.entity.AbstractUser;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,9 +17,4 @@ public class UserDTO extends CommonDTO {
         this.name = user.getName();
         this.level = user.getLevel();
     }
-
-    public static UserDTO valueOf(String json) {
-        return new JSONDeserializer<UserDTO>().deserialize(json);
-    }
-
 }

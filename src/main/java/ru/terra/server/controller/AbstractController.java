@@ -1,9 +1,9 @@
 package ru.terra.server.controller;
 
 import com.sun.jersey.api.core.HttpContext;
-import flexjson.JSONDeserializer;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import ru.terra.server.constants.CoreUrlConstants;
 import ru.terra.server.constants.ErrorConstants;
 import ru.terra.server.dto.CommonDTO;
@@ -14,6 +14,7 @@ import ru.terra.server.security.SecurityLevel;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import java.io.IOException;
 
 public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engine extends AbstractEngine<Bean, ReturnDto>> extends AbstractResource {
 
@@ -99,14 +100,22 @@ public abstract class AbstractController<Bean, ReturnDto extends CommonDTO, Engi
             ret.errorMessage = ErrorConstants.ERR_NOT_AUTHORIZED_MSG;
             return (ReturnDto) ret;
         }
-        ReturnDto newDto = new JSONDeserializer<ReturnDto>().deserialize(json, dtoClass);
+        ReturnDto newDto = null;
+        try {
+            newDto = new ObjectMapper().readValue(json, dtoClass);
+        } catch (IOException e) {
+            logger.error("Unable to read json '" + json + "'", e);
+            return null;
+        }
         Bean bean = null;
         try {
             bean = beanClass.newInstance();
         } catch (InstantiationException e) {
             logger.error("Unable to instantiate bean class", e);
+            return null;
         } catch (IllegalAccessException e) {
             logger.error("Illeagal access exception", e);
+            return null;
         }
         engine.dtoToEntity(newDto, bean);
         return engine.entityToDto(engine.createBean(bean));
