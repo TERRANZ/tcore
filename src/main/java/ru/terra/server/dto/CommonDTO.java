@@ -1,10 +1,8 @@
 package ru.terra.server.dto;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 
-@XmlRootElement
 public class CommonDTO implements Serializable {
     public String errorMessage = "";
     public Integer errorCode = 0;

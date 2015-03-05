@@ -33,89 +33,89 @@ public class ServerBoot {
                 webserver.stop();
             }
         });
-        webserver.getServerConfiguration().addHttpHandler(new StaticHttpHandler(
-                Config.getConfig().getValue(ConfigConstants.SERVER_STATIC_RESOURCES, ConfigConstants.SERVER_STATIC_RESOURCES_DEFAULT)) {
-            @Override
-            public void start() {
-                super.start();
-                System.out.println("Starting static resources handler");
-            }
+        webserver.getServerConfiguration().addHttpHandler(
+                new StaticHttpHandler(Config.getConfig().getValue(ConfigConstants.SERVER_STATIC_RESOURCES, ConfigConstants.SERVER_STATIC_RESOURCES_DEFAULT)) {
+                    @Override
+                    public void start() {
+                        super.start();
+                        System.out.println("Starting static resources handler");
+                    }
 
-            @Override
-            protected boolean handle(String uri, Request request, Response response) throws Exception {
-                System.out.println("Handling uri " + uri);
-                boolean found = false;
+                    @Override
+                    protected boolean handle(String uri, Request request, Response response) throws Exception {
+                        System.out.println("Handling uri " + uri);
+                        boolean found = false;
 
-                final File[] fileFolders = docRoots.getArray();
-                if (fileFolders == null) {
-                    return false;
-                }
+                        final File[] fileFolders = docRoots.getArray();
+                        if (fileFolders == null) {
+                            return false;
+                        }
 
-                File resource = null;
+                        File resource = null;
 
-                for (int i = 0; i < fileFolders.length; i++) {
-                    final File webDir = fileFolders[i];
-                    // local file
-                    resource = new File(webDir, uri);
-                    final boolean exists = resource.exists();
-                    final boolean isDirectory = resource.isDirectory();
+                        for (int i = 0; i < fileFolders.length; i++) {
+                            final File webDir = fileFolders[i];
+                            // local file
+                            resource = new File(webDir, uri);
+                            final boolean exists = resource.exists();
+                            final boolean isDirectory = resource.isDirectory();
 
-                    if (exists && isDirectory) {
-                        final File f = new File(resource, "/index.html");
-                        if (f.exists()) {
-                            resource = f;
-                            found = true;
-                            break;
+                            if (exists && isDirectory) {
+                                final File f = new File(resource, "/index.html");
+                                if (f.exists()) {
+                                    resource = f;
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (isDirectory || !exists) {
+                                found = false;
+                            } else {
+                                found = true;
+                                break;
+                            }
+
+                            if (exists && !isDirectory)
+                                found = true;
+                        }
+
+                        if (!found) {
+                            Logger.getLogger(this.getClass()).warn("File not found: " + resource);
+                            return false;
+                        }
+
+                        pickupContentType(response, resource);
+                        addToFileCache(request, response, resource);
+                        sendFile(response, resource);
+                        return true;
+                    }
+
+                    private void pickupContentType(final Response response,
+                                                   final File file) {
+                        if (!response.getResponse().isContentTypeSet()) {
+                            final String path = file.getPath();
+                            String substr;
+                            int dot = path.lastIndexOf('.');
+                            if (dot < 0) {
+                                substr = file.toString();
+                                dot = substr.lastIndexOf('.');
+                            } else {
+                                substr = path;
+                            }
+
+                            if (dot > 0) {
+                                String ext = substr.substring(dot + 1);
+                                String ct = MimeType.get(ext);
+                                if (ct != null) {
+                                    response.setContentType(ct);
+                                }
+                            } else {
+                                response.setContentType(MimeType.get("html"));
+                            }
                         }
                     }
-
-                    if (isDirectory || !exists) {
-                        found = false;
-                    } else {
-                        found = true;
-                        break;
-                    }
-
-                    if (exists && !isDirectory)
-                        found = true;
-                }
-
-                if (!found) {
-                    Logger.getLogger(this.getClass()).warn("File not found: " + resource);
-                    return false;
-                }
-
-                pickupContentType(response, resource);
-                addToFileCache(request, response, resource);
-                sendFile(response, resource);
-                return true;
-            }
-
-            private void pickupContentType(final Response response,
-                                           final File file) {
-                if (!response.getResponse().isContentTypeSet()) {
-                    final String path = file.getPath();
-                    String substr;
-                    int dot = path.lastIndexOf('.');
-                    if (dot < 0) {
-                        substr = file.toString();
-                        dot = substr.lastIndexOf('.');
-                    } else {
-                        substr = path;
-                    }
-
-                    if (dot > 0) {
-                        String ext = substr.substring(dot + 1);
-                        String ct = MimeType.get(ext);
-                        if (ct != null) {
-                            response.setContentType(ct);
-                        }
-                    } else {
-                        response.setContentType(MimeType.get("html"));
-                    }
-                }
-            }
-        });
+                }, "/resources");
         return webserver;
     }
 
