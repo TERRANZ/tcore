@@ -1,6 +1,8 @@
 package ru.terra.server;
 
 import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
+import com.sun.jersey.api.core.PackagesResourceConfig;
+import com.sun.jersey.api.core.ResourceConfig;
 import org.apache.log4j.Logger;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.Request;
@@ -21,16 +23,21 @@ import java.net.URI;
  */
 public class ServerBoot {
 
-    protected static HttpServer startServer() throws IOException {
+    protected static HttpServer startServer(String pkg) throws IOException {
         Config config = Config.getConfig();
         String url = "http://" + config.getValue(ConfigConstants.SERVER_ADDR, ConfigConstants.SERVER_ADDR_DEFAULT);
         URI uri = UriBuilder.fromUri(url).port(Integer.parseInt(config.getValue(ConfigConstants.SERVER_PORT, ConfigConstants.SERVER_PORT_DEFAULT))).build();
-        final HttpServer webserver = GrizzlyServerFactory.createHttpServer(uri);
-
+        HttpServer webserver = null;
+        if (pkg != null) {
+            ResourceConfig rc = new PackagesResourceConfig("ru.terra");
+            webserver = GrizzlyServerFactory.createHttpServer(uri, rc);
+        } else
+            webserver = GrizzlyServerFactory.createHttpServer(uri);
+        final HttpServer finalWebserver = webserver;
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-                webserver.stop();
+                finalWebserver.stop();
             }
         });
         webserver.getServerConfiguration().addHttpHandler(
@@ -121,7 +128,7 @@ public class ServerBoot {
 
 
     public void start() throws IOException {
-        HttpServer httpServer = startServer();
+        HttpServer httpServer = startServer(null);
         while (true) {
             try {
                 Thread.sleep(10);
@@ -129,7 +136,16 @@ public class ServerBoot {
                 e.printStackTrace();
             }
         }
+    }
 
-
+    public void start(String pkg) throws IOException {
+        HttpServer httpServer = startServer(pkg);
+        while (true) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
