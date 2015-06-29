@@ -22,6 +22,7 @@ public class Config {
     private Config() {
         try {
             configuration = new PropertiesConfiguration("tm.properties");
+            configuration.setEncoding("UTF-8");
             configuration.setAutoSave(true);
         } catch (Exception e) {
             e.printStackTrace();
