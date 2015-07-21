@@ -34,7 +34,7 @@ public class ServerBoot {
         } else
             webserver = GrizzlyServerFactory.createHttpServer(uri);
         final HttpServer finalWebserver = webserver;
-        Runtime.getRuntime().addShutdownHook(new Thread() {
+        Runtime.getRuntime().addShutdownHook( new Thread() {
             @Override
             public void run() {
                 finalWebserver.stop();
