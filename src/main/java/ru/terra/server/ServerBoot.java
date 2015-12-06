@@ -34,7 +34,7 @@ public class ServerBoot {
         } else
             webserver = GrizzlyServerFactory.createHttpServer(uri);
         final HttpServer finalWebserver = webserver;
-        Runtime.getRuntime().addShutdownHook( new Thread() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
                 finalWebserver.stop();
@@ -45,12 +45,12 @@ public class ServerBoot {
                     @Override
                     public void start() {
                         super.start();
-                        System.out.println("Starting static resources handler");
+                        Logger.getLogger(this.getClass()).debug("Starting static resources handler");
                     }
 
                     @Override
                     protected boolean handle(String uri, Request request, Response response) throws Exception {
-                        System.out.println("Handling uri " + uri);
+                        Logger.getLogger(this.getClass()).debug("Handling uri " + uri);
                         boolean found = false;
 
                         final File[] fileFolders = docRoots.getArray();
